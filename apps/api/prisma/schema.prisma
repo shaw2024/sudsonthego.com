@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  WASHER
+}
+
+enum BookingStatus {
+  SCHEDULED
+  WASHER_ASSIGNED
+  EN_ROUTE
+  ARRIVED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  REQUIRES_ACTION
+  SUCCEEDED
+  FAILED
+}
+
+enum TipStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+model User {
+  id                 String         @id @default(uuid())
+  role               UserRole
+  name               String
+  phone              String?
+  email              String         @unique
+  stripeCustomerId   String?
+  createdAt          DateTime       @default(now())
+  customerBookings   Booking[]      @relation("CustomerBookings")
+  washerBookings     Booking[]      @relation("WasherBookings")
+  washerProfile      WasherProfile?
+  tips               Tip[]
+  ratingsGiven       Rating[]       @relation("RatingsGiven")
+  ratingsReceived    Rating[]       @relation("RatingsReceived")
+  pushTokens         PushToken[]
+}
+
+model WasherProfile {
+  userId           String   @id
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  radiusMiles      Float
+  availabilityJson Json
+  isActive         Boolean  @default(true)
+}
+
+model Service {
+  id            String    @id @default(uuid())
+  name          String    @unique
+  description   String
+  priceCents    Int
+  durationMins  Int
+  createdAt     DateTime  @default(now())
+  bookings      Booking[]
+}
+
+model Booking {
+  id                    String        @id @default(uuid())
+  customerId            String
+  washerId              String?
+  serviceId             String
+  scheduledAt           DateTime
+  status                BookingStatus @default(SCHEDULED)
+  addressText           String
+  lat                   Float
+  lng                   Float
+  totalCents            Int
+  paymentIntentId       String?
+  setupIntentId         String?
+  paymentStatus         PaymentStatus @default(PENDING)
+  createdAt             DateTime      @default(now())
+
+  customer              User          @relation("CustomerBookings", fields: [customerId], references: [id], onDelete: Cascade)
+  washer                User?         @relation("WasherBookings", fields: [washerId], references: [id])
+  service               Service       @relation(fields: [serviceId], references: [id])
+  tip                   Tip?
+  rating                Rating?
+
+  @@index([customerId])
+  @@index([washerId, scheduledAt])
+}
+
+model Tip {
+  id                      String     @id @default(uuid())
+  bookingId               String     @unique
+  customerId              String
+  amountCents             Int
+  stripePaymentIntentId   String?
+  status                  TipStatus  @default(PENDING)
+  createdAt               DateTime   @default(now())
+
+  booking                 Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  customer                User       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}
+
+model Rating {
+  id          String    @id @default(uuid())
+  bookingId   String    @unique
+  customerId  String
+  washerId    String
+  stars       Int
+  comment     String?
+  createdAt   DateTime  @default(now())
+
+  booking     Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  customer    User      @relation("RatingsGiven", fields: [customerId], references: [id], onDelete: Cascade)
+  washer      User      @relation("RatingsReceived", fields: [washerId], references: [id], onDelete: Cascade)
+}
+
+model PushToken {
+  id          String    @id @default(uuid())
+  userId      String
+  token       String    @unique
+  platform    String
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

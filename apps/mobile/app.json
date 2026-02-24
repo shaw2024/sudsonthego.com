@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "SudsOnTheGo",
+    "slug": "suds-on-the-go",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "icon": "./assets/icon.png",
+    "splash": {
+      "backgroundColor": "#0F172A"
+    },
+    "plugins": [
+      "expo-notifications",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.sudsonthego"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "replace-me"
+      }
+    }
+  }
+}
