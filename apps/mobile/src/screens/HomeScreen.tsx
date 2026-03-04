@@ -4,13 +4,18 @@ import { StatusBadge } from "../components/StatusBadge";
 import { StatusTimeline } from "../components/StatusTimeline";
 
 const COLORS = {
-  background: "#F8FAFC",
-  surface: "#FFFFFF",
-  ink: "#0F172A",
-  muted: "#64748B",
-  subtle: "#E2E8F0",
-  accent: "#0EA5E9",
-  success: "#22C55E"
+  background: "#05091a",
+  surface: "rgba(14, 22, 52, 0.70)",
+  surface2: "rgba(14, 22, 52, 0.95)",
+  border: "rgba(99, 138, 220, 0.18)",
+  text: "#eef2ff",
+  textMuted: "#8fa8d4",
+  textXs: "#6481a8",
+  brand: "#3b82f6",
+  brand2: "#1d4ed8",
+  brand3: "#60a5fa",
+  mint: "#34d399",
+  amber: "#fbbf24"
 } as const;
 
 const quickActions = ["Book Wash", "Track Washer", "Payment", "Support"];
@@ -20,7 +25,7 @@ export function HomeScreen({ navigation }: { navigation: any }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.heroCard}>
@@ -94,12 +99,14 @@ const styles = StyleSheet.create({
     paddingBottom: 28
   },
   heroCard: {
-    backgroundColor: COLORS.ink,
+    backgroundColor: COLORS.surface2,
     borderRadius: 20,
-    padding: 20
+    padding: 20,
+    borderWidth: 1,
+    borderColor: COLORS.border
   },
   kicker: {
-    color: COLORS.accent,
+    color: COLORS.brand3,
     fontWeight: "700",
     fontSize: 13,
     marginBottom: 8,
@@ -107,27 +114,32 @@ const styles = StyleSheet.create({
     textTransform: "uppercase"
   },
   heroTitle: {
-    color: "#FFFFFF",
+    color: COLORS.text,
     fontSize: 28,
     lineHeight: 34,
     fontWeight: "800",
     marginBottom: 10
   },
   heroSubtitle: {
-    color: "#CBD5E1",
+    color: COLORS.textMuted,
     fontSize: 15,
     lineHeight: 22,
     marginBottom: 18
   },
   ctaButton: {
     alignSelf: "flex-start",
-    backgroundColor: COLORS.success,
+    backgroundColor: COLORS.brand,
     borderRadius: 12,
     paddingHorizontal: 16,
-    paddingVertical: 10
+    paddingVertical: 10,
+    shadowColor: COLORS.brand,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 8
   },
   ctaText: {
-    color: "#052E16",
+    color: "#FFFFFF",
     fontWeight: "800",
     fontSize: 15
   },
@@ -136,7 +148,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: COLORS.subtle
+    borderColor: COLORS.border
   },
   sectionHeaderRow: {
     flexDirection: "row",
@@ -145,13 +157,13 @@ const styles = StyleSheet.create({
     gap: 10
   },
   sectionTitle: {
-    color: COLORS.ink,
+    color: COLORS.text,
     fontSize: 18,
     fontWeight: "800"
   },
   metaText: {
     marginTop: 6,
-    color: COLORS.muted,
+    color: COLORS.textMuted,
     fontSize: 14,
     fontWeight: "500"
   },
@@ -164,15 +176,15 @@ const styles = StyleSheet.create({
   quickAction: {
     minWidth: "48%",
     flexGrow: 1,
-    backgroundColor: "#EEF6FF",
+    backgroundColor: "rgba(59, 130, 246, 0.12)",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#C7E6FF",
+    borderColor: "rgba(59, 130, 246, 0.25)",
     paddingVertical: 14,
     paddingHorizontal: 12
   },
   quickActionText: {
-    color: "#0C4A6E",
+    color: COLORS.brand3,
     fontWeight: "700",
     textAlign: "center"
   },
@@ -187,17 +199,17 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: COLORS.subtle,
+    borderColor: COLORS.border,
     alignItems: "center"
   },
   statValue: {
-    color: COLORS.ink,
+    color: COLORS.text,
     fontSize: 26,
     fontWeight: "800",
     marginBottom: 4
   },
   statLabel: {
-    color: COLORS.muted,
+    color: COLORS.textMuted,
     fontWeight: "600"
   }
 });

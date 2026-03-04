@@ -6,8 +6,10 @@
     "orientation": "portrait",
     "platforms": [
       "ios",
-      "android"
+      "android",
+      "web"
     ],
+    "main": "index.js",
     "icon": "./assets/icon.png",
     "splash": {
       "backgroundColor": "#0F172A"

@@ -4,12 +4,16 @@ import { StatusBadge } from "../components/StatusBadge";
 import { StatusTimeline } from "../components/StatusTimeline";
 
 const COLORS = {
-  background: "#F8FAFC",
-  surface: "#FFFFFF",
-  ink: "#0F172A",
-  muted: "#64748B",
-  subtle: "#E2E8F0",
-  accent: "#0EA5E9"
+  background: "#05091a",
+  surface: "rgba(14, 22, 52, 0.70)",
+  surface2: "rgba(14, 22, 52, 0.95)",
+  border: "rgba(99, 138, 220, 0.18)",
+  text: "#eef2ff",
+  textMuted: "#8fa8d4",
+  textXs: "#6481a8",
+  brand: "#3b82f6",
+  brand2: "#1d4ed8",
+  brand3: "#60a5fa"
 } as const;
 
 export function BookingDetailsScreen({ navigation }: { navigation: any }) {
@@ -17,7 +21,7 @@ export function BookingDetailsScreen({ navigation }: { navigation: any }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton} activeOpacity={0.85}>
@@ -78,17 +82,19 @@ const styles = StyleSheet.create({
     gap: 10
   },
   backButton: {
-    backgroundColor: "#E2E8F0",
+    backgroundColor: COLORS.surface,
     borderRadius: 10,
     paddingHorizontal: 12,
-    paddingVertical: 8
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: COLORS.border
   },
   backText: {
-    color: COLORS.ink,
+    color: COLORS.text,
     fontWeight: "700"
   },
   screenTitle: {
-    color: COLORS.ink,
+    color: COLORS.text,
     fontSize: 24,
     fontWeight: "800"
   },
@@ -96,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: COLORS.subtle,
+    borderColor: COLORS.border,
     padding: 16
   },
   statusRow: {
@@ -106,12 +112,12 @@ const styles = StyleSheet.create({
     gap: 10
   },
   cardTitle: {
-    color: COLORS.ink,
+    color: COLORS.text,
     fontSize: 18,
     fontWeight: "800"
   },
   meta: {
-    color: COLORS.muted,
+    color: COLORS.textMuted,
     fontSize: 14,
     fontWeight: "500",
     marginTop: 6
@@ -122,32 +128,40 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   label: {
-    color: COLORS.muted,
+    color: COLORS.textMuted,
     fontWeight: "600"
   },
   value: {
-    color: COLORS.ink,
+    color: COLORS.text,
     fontWeight: "700"
   },
   totalRow: {
     borderTopWidth: 1,
-    borderTopColor: COLORS.subtle,
+    borderTopColor: COLORS.border,
     paddingTop: 12,
     marginTop: 14
   },
   totalLabel: {
-    color: COLORS.ink,
+    color: COLORS.text,
     fontSize: 16,
     fontWeight: "800"
   },
   totalValue: {
-    color: COLORS.accent,
+    color: COLORS.brand3,
     fontSize: 18,
     fontWeight: "900"
   },
   primaryButton: {
-    backgroundColor: COLORS.ink,
+    backgroundColor: COLORS.brand,
     borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+    shadowColor: COLORS.brand,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 8
+  },
     paddingVertical: 14,
     alignItems: "center"
   },

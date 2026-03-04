@@ -18,10 +18,10 @@ export function StatusTimeline({ status }: { status: string }) {
                 height: 10,
                 borderRadius: 5,
                 marginRight: 10,
-                backgroundColor: isDone ? "#22C55E" : "#CBD5E1"
+                backgroundColor: isDone ? "#34d399" : "rgba(99, 138, 220, 0.3)"
               }}
             />
-            <Text style={{ color: isDone ? "#0F172A" : "#64748B", fontWeight: isDone ? "700" : "500" }}>
+            <Text style={{ color: isDone ? "#eef2ff" : "#8fa8d4", fontWeight: isDone ? "700" : "500" }}>
               {step.replaceAll("_", " ")}
             </Text>
           </View>
