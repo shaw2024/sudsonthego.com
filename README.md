@@ -1,110 +1,118 @@
-# SudsOnTheGo MVP
+# SudsOnTheGo
 
-Production-ready MVP monorepo for an on-demand mobile car wash platform.
+**Premium on-demand mobile car wash — delivered to your door.**
+
+> 🌐 Live site: [sudsonthego.com](https://shaw2024.github.io/sudsonthego.com/)
+
+---
+
+## What is SudsOnTheGo?
+
+SudsOnTheGo connects customers with vetted, top-rated mobile car washers who come to your driveway, office lot, or apartment garage. Book in under 2 minutes, track your washer in real-time, and pay securely with Stripe.
+
+---
 
 ## Stack
 
-- Mobile: Expo + React Native + TypeScript
-- API: Node.js + Express + TypeScript
-- Shared contracts: TypeScript + Zod
-- Database: Postgres + Prisma
-- Auth: Supabase Auth
-- Payments: Stripe (booking PaymentIntent + SetupIntent for post-job tips)
-- Maps: Google Places API + map coordinates in booking flow
-- Notifications: Expo push notifications
+| Layer       | Technology                                    |
+|-------------|-----------------------------------------------|
+| Mobile App  | Expo · React Native · TypeScript              |
+| API Server  | Node.js · Express · TypeScript                |
+| Database    | PostgreSQL · Prisma ORM                       |
+| Auth        | Supabase Auth (JWT)                           |
+| Payments    | Stripe (PaymentIntent + SetupIntent for tips) |
+| Maps        | Google Places API                             |
+| Push Alerts | Expo Push Notifications                       |
+| Landing     | Static HTML/CSS (served from `docs/`)         |
 
-## Monorepo structure
+---
+
+## Monorepo layout
 
 ```
 apps/
-	api/
-	mobile/
+  api/          → Express REST API + Prisma
+  mobile/       → Expo React Native app
 packages/
-	shared/
+  shared/       → Shared TypeScript types & Zod schemas
+docs/
+  index.html    → Public-facing landing page (GitHub Pages)
 ```
+
+---
 
 ## Quick start
 
-1. Install dependencies:
-
+### 1. Install dependencies
 ```bash
 npm install
 ```
 
-2. Start Postgres:
-
+### 2. Start the database
 ```bash
 docker compose up -d postgres
 ```
 
-3. Configure environment variables:
-
+### 3. Configure environment variables
 ```bash
-cp .env.example .env
 cp apps/api/.env.example apps/api/.env
 cp apps/mobile/.env.example apps/mobile/.env
+# Edit both .env files with your credentials
 ```
 
-4. Run Prisma migrations and seed:
-
+### 4. Migrate & seed
 ```bash
 npm run prisma:migrate -w apps/api
 npm run prisma:seed -w apps/api
 ```
 
-5. Start API:
-
+### 5. Run development servers
 ```bash
+# API (http://localhost:4000)
 npm run dev -w apps/api
-```
 
-6. Start mobile app:
-
-```bash
+# Mobile app
 npm run dev -w apps/mobile
 ```
 
-## Stripe webhook local testing
+---
 
-1. Install Stripe CLI and login.
-2. Forward events to local API:
+## API reference
+
+| Method | Route                        | Description                         |
+|--------|------------------------------|-------------------------------------|
+| GET    | `/health`                    | Health check                        |
+| GET    | `/services`                  | List available services             |
+| POST   | `/bookings`                  | Create booking + payment intent     |
+| GET    | `/bookings`                  | Customer's booking list             |
+| GET    | `/bookings/:id`              | Single booking detail               |
+| POST   | `/bookings/:id/assign`       | Washer self-assigns a booking       |
+| POST   | `/bookings/:id/status`       | Advance booking status              |
+| POST   | `/tips`                      | Add a tip post-wash                 |
+| POST   | `/ratings`                   | Submit a rating                     |
+| POST   | `/push-tokens`               | Register Expo push token            |
+| POST   | `/washers/profile`           | Upsert washer profile               |
+| POST   | `/webhooks/stripe`           | Stripe webhook handler              |
+
+---
+
+## Stripe local testing
 
 ```bash
 stripe listen --forward-to localhost:4000/webhooks/stripe
+# Copy the generated signing secret → STRIPE_WEBHOOK_SECRET in apps/api/.env
 ```
 
-3. Copy generated webhook signing secret into `STRIPE_WEBHOOK_SECRET`.
+---
 
-## API endpoints
+## Deploying the landing page
 
-- `GET /services`
-- `POST /bookings`
-- `GET /bookings/:id`
-- `GET /bookings`
-- `POST /bookings/:id/assign`
-- `POST /bookings/:id/status`
-- `POST /tips`
-- `POST /ratings`
-- `POST /push-tokens`
-- `POST /washers/profile`
-- `POST /webhooks/stripe`
+The static site (`docs/index.html`) deploys automatically via GitHub Actions to GitHub Pages.
 
-## Notes
+1. Go to **Settings → Pages** → set source to **GitHub Actions**.
+2. Push to `main` — the workflow publishes from `docs/`.
+3. Site is live at `https://shaw2024.github.io/sudsonthego.com/`.
 
-- Booking flow returns both `paymentIntentClientSecret` and `setupIntentClientSecret`.
-- Tips can be charged with saved payment method (off-session) or a new payment intent.
-- Washer assignment checks time-slot conflicts to prevent double-booking.
+---
 
-## GitHub Pages site
-
-This repo includes a minimal static site in `docs/` and a workflow at `.github/workflows/pages.yml`.
-
-To publish it:
-
-1. Go to **GitHub → Settings → Pages**.
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-3. Push to `main` (or run the workflow manually).
-
-The site deploys from `docs/` and will be available at:
-
-- `https://shaw2024.github.io/sudsonthego.com/`
+© 2026 SudsOnTheGo
