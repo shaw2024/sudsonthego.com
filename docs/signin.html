@@ -312,34 +312,78 @@
   </div>
 </main>
 
+<script src="auth.js"></script>
 <script>
   const form = document.getElementById('signinForm');
   const errorMessage = document.getElementById('errorMessage');
+  const submitBtn = form.querySelector('button[type="submit"]');
 
-  form.addEventListener('submit', (e) => {
+  // Check if already authenticated
+  if (auth.isAuthenticated()) {
+    window.location.href = 'account.html';
+  }
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     
-    // Simple mock authentication
-    if (email === 'demo@sudsonthego.com' && password === 'demo123') {
-      // Set a simple flag in sessionStorage
-      sessionStorage.setItem('isAuthenticated', 'true');
-      sessionStorage.setItem('userEmail', email);
+    // Disable button and show loading state
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Signing in...';
+    submitBtn.disabled = true;
+    errorMessage.classList.remove('show');
+    
+    try {
+      // Use real Supabase authentication
+      const result = await auth.signIn(email, password);
       
-      // Redirect to account page
-      window.location.href = 'account.html';
-    } else {
-      // Show error
-      errorMessage.textContent = '❌ Invalid email or password. Please try the demo credentials.';
+      if (result.success) {
+        // Set backward-compatible sessionStorage for existing code
+        sessionStorage.setItem('isAuthenticated', 'true');
+        sessionStorage.setItem('userEmail', email);
+        
+        // Redirect to account page
+        window.location.href = 'account.html';
+      } else {
+        throw new Error(result.error || 'Authentication failed');
+      }
+    } catch (error) {
+      // Show error message
+      errorMessage.textContent = `❌ ${error.message}`;
       errorMessage.classList.add('show');
+      
+      // Reset button
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
       
       setTimeout(() => {
         errorMessage.classList.remove('show');
       }, 5000);
     }
   });
+
+  // Fallback to mock auth if Supabase not configured
+  // Remove this section once Supabase is set up
+  if (auth.SUPABASE_URL === 'https://your-project-ref.supabase.co') {
+    console.warn('⚠️ Supabase not configured. Using demo mode.');
+    
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      if (email === 'demo@sudsonthego.com' && password === 'demo123') {
+        sessionStorage.setItem('isAuthenticated', 'true');
+        sessionStorage.setItem('userEmail', email);
+        window.location.href = 'account.html';
+      } else {
+        errorMessage.textContent = '❌ Invalid credentials. Try: demo@sudsonthego.com / demo123';
+        errorMessage.classList.add('show');
+      }
+    }, { once: true });
+  }
 </script>
 
 </body>

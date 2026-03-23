@@ -469,26 +469,98 @@
   </div>
 </main>
 
+<script src="auth.js"></script>
 <script>
-  // Check if user is authenticated
-  const isAuthenticated = sessionStorage.getItem('isAuthenticated');
-  const userEmail = sessionStorage.getItem('userEmail');
-
-  if (!isAuthenticated) {
-    // Redirect to signin if not authenticated
+  // Check authentication on page load
+  if (!auth.isAuthenticated()) {
     window.location.href = 'signin.html';
-  } else {
-    // Display user email if available
-    if (userEmail) {
-      document.getElementById('userEmail').textContent = userEmail;
+  }
+
+  // Display user information
+  const user = auth.getUser();
+  if (user) {
+    document.getElementById('userEmail').textContent = user.email || 'User';
+    
+    // If user has name in metadata, show it
+    if (user.user_metadata?.name) {
+      document.getElementById('userEmail').textContent = user.user_metadata.name;
     }
   }
 
-  function signOut() {
-    sessionStorage.removeItem('isAuthenticated');
-    sessionStorage.removeItem('userEmail');
+  // Sign out function
+  async function signOut() {
+    await auth.signOut();
     window.location.href = 'signin.html';
   }
+
+  // Optional: Load real booking data from API
+  async function loadBookings() {
+    try {
+      const response = await auth.apiRequest('/bookings');
+      
+      if (response.ok) {
+        const bookings = await response.json();
+        displayBookings(bookings);
+      }
+    } catch (error) {
+      console.log('Using demo bookings - API not available:', error.message);
+      // Keep showing demo bookings if API not available
+    }
+  }
+
+  function displayBookings(bookings) {
+    const container = document.querySelector('.bookings-grid');
+    if (!bookings || bookings.length === 0) return;
+
+    // Clear existing demo bookings
+    container.innerHTML = '';
+
+    // Display real bookings
+    bookings.forEach(booking => {
+      const card = document.createElement('div');
+      card.className = 'booking-card';
+      
+      const statusClass = booking.status.toLowerCase().replace('_', '-');
+      const date = new Date(booking.scheduledAt).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      
+      card.innerHTML = `
+        <div class="booking-icon">${getServiceIcon(booking.service.name)}</div>
+        <div class="booking-details">
+          <h3>${booking.service.name}</h3>
+          <div class="booking-meta">
+            <span>📅 ${date}</span>
+            <span>📍 ${booking.addressText}</span>
+            <span>💵 $${(booking.totalCents / 100).toFixed(2)}</span>
+          </div>
+        </div>
+        <span class="status-badge ${statusClass}">${formatStatus(booking.status)}</span>
+      `;
+      
+      container.appendChild(card);
+    });
+  }
+
+  function getServiceIcon(serviceName) {
+    const icons = {
+      'Express Wash': '🔄',
+      'Premium Detail': '✨',
+      'Full Detail': '🎨'
+    };
+    return icons[serviceName] || '🚗';
+  }
+
+  function formatStatus(status) {
+    return status.split('_').map(word => 
+      word.charAt(0) + word.slice(1).toLowerCase()
+    ).join(' ');
+  }
+
+  // Try to load real bookings (will fall back to demo if not available)
+  loadBookings();
 </script>
 
 </body>

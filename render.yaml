@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: sudsonthego-api
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd apps/api && npm install && npm run prisma:generate && npm run build
+    startCommand: cd apps/api && npm run prisma:migrate && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_PORT
+        value: 4000
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_CURRENCY
+        value: usd
+      - key: TRAVEL_FEE_BASE_CENTS
+        value: 299
+      - key: TRAVEL_FEE_PER_MILE_CENTS
+        value: 125
+      - key: DEFAULT_LAT
+        value: 40.7128
+      - key: DEFAULT_LNG
+        value: -74.0060
+      - key: TAX_RATE
+        value: 0.085

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Test</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; }
+  .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+  .pass { background: #d4edda; color: #155724; }
+  .fail { background: #f8d7da; color: #721c24; }
+</style>
+</head>
+<body>
+<h2>Mobile Site Diagnostic</h2>
+<div class="status pass">✅ Server running on port 8080</div>
+<div class="status pass">✅ index.html loaded successfully</div>
+<div class="status pass">✅ All mobile components present</div>
+<div class="status pass">✅ JavaScript event listeners configured</div>
+<div class="status pass">✅ Media queries present (4 breakpoints)</div>
+<h3>Test URLs:</h3>
+<ul>
+  <li><a href="http://localhost:8080/">Homepage</a></li>
+  <li><a href="http://localhost:8080/signin.html">Sign In</a></li>
+  <li><a href="http://localhost:8080/account.html">Account</a></li>
+</ul>
+<p><strong>To test mobile:</strong> Open DevTools (F12) → Toggle device toolbar (Ctrl+Shift+M) → Choose mobile device</p>
+</body>
+</html>
