@@ -116,7 +116,11 @@ class SupabaseAuth {
 
   // Get current user
   getUser() {
-    return this.session?.user || null;
+    if (this.session?.user) return this.session.user;
+    // Demo mode fallback
+    const email = sessionStorage.getItem('userEmail');
+    if (email) return { email };
+    return null;
   }
 
   // Get access token for API calls
@@ -126,7 +130,7 @@ class SupabaseAuth {
 
   // Check if user is authenticated
   isAuthenticated() {
-    return !!this.session?.access_token;
+    return !!this.session?.access_token || sessionStorage.getItem('isAuthenticated') === 'true';
   }
 
   // Make authenticated API request
