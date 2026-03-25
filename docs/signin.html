@@ -323,6 +323,9 @@
     window.location.href = 'account.html';
   }
 
+  // Check if Supabase is configured
+  const isSupabaseConfigured = auth.SUPABASE_URL !== 'https://your-project-ref.supabase.co';
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -336,18 +339,31 @@
     errorMessage.classList.remove('show');
     
     try {
-      // Use real Supabase authentication
-      const result = await auth.signIn(email, password);
-      
-      if (result.success) {
-        // Set backward-compatible sessionStorage for existing code
-        sessionStorage.setItem('isAuthenticated', 'true');
-        sessionStorage.setItem('userEmail', email);
+      if (isSupabaseConfigured) {
+        // Use real Supabase authentication
+        const result = await auth.signIn(email, password);
         
-        // Redirect to account page
-        window.location.href = 'account.html';
+        if (result.success) {
+          // Set backward-compatible sessionStorage for existing code
+          sessionStorage.setItem('isAuthenticated', 'true');
+          sessionStorage.setItem('userEmail', email);
+          
+          // Redirect to account page
+          window.location.href = 'account.html';
+        } else {
+          throw new Error(result.error || 'Authentication failed');
+        }
       } else {
-        throw new Error(result.error || 'Authentication failed');
+        // Demo mode - fallback authentication
+        console.warn('⚠️ Supabase not configured. Using demo mode.');
+        
+        if (email === 'demo@sudsonthego.com' && password === 'demo123') {
+          sessionStorage.setItem('isAuthenticated', 'true');
+          sessionStorage.setItem('userEmail', email);
+          window.location.href = 'account.html';
+        } else {
+          throw new Error('Invalid credentials. Try: demo@sudsonthego.com / demo123');
+        }
       }
     } catch (error) {
       // Show error message
@@ -363,27 +379,6 @@
       }, 5000);
     }
   });
-
-  // Fallback to mock auth if Supabase not configured
-  // Remove this section once Supabase is set up
-  if (auth.SUPABASE_URL === 'https://your-project-ref.supabase.co') {
-    console.warn('⚠️ Supabase not configured. Using demo mode.');
-    
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      
-      if (email === 'demo@sudsonthego.com' && password === 'demo123') {
-        sessionStorage.setItem('isAuthenticated', 'true');
-        sessionStorage.setItem('userEmail', email);
-        window.location.href = 'account.html';
-      } else {
-        errorMessage.textContent = '❌ Invalid credentials. Try: demo@sudsonthego.com / demo123';
-        errorMessage.classList.add('show');
-      }
-    }, { once: true });
-  }
 </script>
 
 </body>
